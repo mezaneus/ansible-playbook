@@ -1,0 +1,71 @@
+# FIRST PLAY
+- name: Setting up apache webserver on amazon linux servers
+  hosts: amazon-clients
+  vars_files:
+    - variables.yml
+  tasks: 
+    - name: upgrade all apache on the server #  yum update -y
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+    - name: Install the latest version of apache on the server # yum install httpd -y
+      ansible.builtin.yum:
+        name: httpd
+        state: latest
+    - name: using debug module to prent a user name 
+      ansible.builtin.debug:
+        msg: This module will print the name of the student {{ student_name }} on the screen when template runs
+    - name: start service httpd, if not started # systemctl start httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+    - name: Enable service httpd at server launch # systemctl enable httpd
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+    - name: Install the latest git # yum install git -y
+      ansible.builtin.yum:
+        name: git
+        state: present 
+    - name: copy index.html file from the controller to the client at /var/www/html/
+      ansible.builtin.copy:
+        src: /root/playbook/amazon-index.html/index.html
+        dest: /var/www/html/
+
+# SECOND PLAY2
+- name: ping all the clients
+  hosts: all 
+
+  tasks:
+    - name:  ping all the clients
+      ansible.builtin.ping:
+
+# third Play3
+- name: Setting up apache webserver on ubuntu servers
+  hosts: ubuntu-clients
+
+  tasks: 
+    - name: upgrade all apache on the server #  apt update -y
+      ansible.builtin.apt:
+        name: '*'
+        state: latest
+    - name: Install the latest version of apache on the server # apt install httpd -y
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+    - name: start service apache2, if not started # systemctl start httpd
+      ansible.builtin.service:
+        name: apache2
+        state: started
+    - name: Enable service httpd at server launch # systemctl enable httpd
+      ansible.builtin.service:
+        name: apache2
+        enabled: yes
+    - name: Install the latest git # yum install git -y
+      ansible.builtin.yum:
+        name: git
+        state: present 
+    - name: copy index.html file from the controller to the clients at /var/www/html/
+      ansible.builtin.copy:
+        src: /root/playbook/ubuntu-index.html/index.html
+        dest: /var/www/html/
